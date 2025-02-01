@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getWebviewContent } from './webviewContent';
 import { sendChatRequest } from './sendChatRequest';
+import { Icon } from '@material-ui/core';
 
 
 export function activate(context: vscode.ExtensionContext) {

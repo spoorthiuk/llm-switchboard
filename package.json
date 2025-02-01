@@ -1,7 +1,7 @@
 {
   "name": "llm-switchboard",
   "displayName": "llm-switchboard",
-  "description": "An extension to run offline LLM code assistants",
+  "description": "Offline code assistant for VS code which lets the user switch between multiple models",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.96.0"
@@ -9,13 +9,13 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "llm-switchboard.helloWorld",
-        "title": "Hello World"
+        "command": "llm-switchboard.switchboard",
+        "title": "LLM Switchboard"
       }
     ]
   },

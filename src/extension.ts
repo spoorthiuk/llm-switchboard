@@ -1,26 +1,53 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { getWebviewContent } from './webviewContent';
+import { sendChatRequest } from './sendChatRequest';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+
 export function activate(context: vscode.ExtensionContext) {
+    const disposable = vscode.commands.registerCommand('llm-switchboard.switchboard', () => {
+        vscode.window.showInformationMessage('Choose an AI assistant');
+        console.log('Switchboard activated');
+        const modelSelection = vscode.window.createQuickPick();
+        modelSelection.items = [
+            { label: 'deepseek-r1:8b', description: 'DeepSeek\'s first-generation of reasoning models with comparable performance to OpenAI-o1' },
+            { label: 'llama3.2', description: 'Meta\'s Llama 3.2 goes small with 1B and 3B models' },
+        ];
+        modelSelection.onDidChangeSelection(selection => {
+            if (selection[0]) {
+                vscode.window.showInformationMessage(`You selected: ${selection[0].label}`);
+                modelSelection.hide();
+                const panel = vscode.window.createWebviewPanel(
+                    'llmChat',
+                    'LLM Chat',
+                    vscode.ViewColumn.Two, // Show in the left column
+                    {
+                        enableScripts: true, // Enable JS for interactivity
+                        retainContextWhenHidden: true, // Keep chat state when hidden
+                    }
+                );
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "llm-switchboard" is now active!');
+                // HTML content for the chat window
+                panel.webview.html = getWebviewContent();
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('llm-switchboard.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from llm-switchboard!');
-	});
+                // Listen for messages from the webview
+                panel.webview.onDidReceiveMessage(async (message) => {
+                    if (message.command === 'sendMessage') {
+                        const userMessage = message.text;
+                        const response = await sendChatRequest(userMessage, selection[0].label);  // Call API with the user message
+                        panel.webview.postMessage({ command: 'receiveMessage', text: response });  // Send response back to webview
+                    }
+                });
+            }
+        });
 
-	context.subscriptions.push(disposable);
+        modelSelection.onDidHide(() => modelSelection.dispose());
+        modelSelection.show();
+    });
+
+    context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+

@@ -1,35 +1,46 @@
-# llm-switchboard README
+# LLMSwitchboard README
 
-This is the README for your extension "llm-switchboard". After writing up a brief description, we recommend including the following sections.
+LLMSwitchboard is a VS Code extension that allows users to chat with multiple offline large language models (LLMs) directly within their editor. This extension provides seamless interaction with locally hosted AI models for coding assistance, debugging, and general inquiries—all while keeping data private.
+
+Unlike cloud-based AI assistants, LLMSwitchboard ensures that all interactions remain local, meaning no data leaves your machine. This is particularly beneficial for developers working with confidential codebases, offline environments, or those concerned with data privacy.
+
+With its intuitive chat interface, model-switching capabilities, and context-awareness, LLMSwitchboard enhances the developer experience by providing intelligent, real-time code suggestions and explanations without requiring internet access. Whether you're debugging an error, refactoring code, or seeking general programming guidance, LLMSwitchboard empowers you with AI-assisted coding directly within your workflow.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* 🤖 Multiple LLM Support – Switch between different local AI models easily.
+* 🔌 Offline Chat – No internet connection required; all processing is done locally.
+* 📌 Integrated UI – Chat window opens alongside the editor for a seamless experience.
+* 🔒 Privacy First – No external API calls; all conversations stay on your device.
 
-For example if there is an image subfolder under your extension project workspace:
+*Coming soon!* 
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+📝 Context Awareness – Parse open code files for more relevant AI responses.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+To use LLMSwitchboard, ensure the following dependencies are installed:
+* A locally running LLM server from [Ollama](https://ollama.com)
+
+### Setup Instructions
+1. Install the extension from the VS Code Marketplace or manually from GitHub.
+2. Ensure your local LLM server is running (http://localhost:11434/api/chat).
+3. Open VS Code and run "LLM Switchboard" from the command palette.
+4. Select your preferred model and start chatting!
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+1. Install the extension from the VS Code Marketplace or manually from GitHub.
+2. Ensure your local LLM server is running (http://localhost:11434/api/chat).
+3. Open VS Code and run "LLM Switchboard" from the command palette.
+4. Select your preferred model and start chatting!
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* *Long response times*: Some models may take time to generate responses depending on hardware.
+* *Incomplete responses*: Some LLMs might have output truncation issues.
+* *Limited model compatibility*: Only supports local models with a REST API.
+If you encounter any issues, please report them in the [GitHub Issues](https://github.com/spoorthiuk/llm-switchboard/issues) section.
 
 ## Release Notes
 
@@ -37,35 +48,14 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
+* Initial release with core chat functionality.
+* Support for multiple offline LLMs available on [Ollama](https://ollama.com/search).
+* Chat window opens next to the code editor.
+* Basic model selection via quick pick.
 
-### 1.0.1
+### 1.0.1 (Upcoming)
 
-Fixed issue #.
+* Copy-to-clipboard button for code blocks.
+* Improved chat UI with formatting.
+* Context awareness by parsing open code files
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**

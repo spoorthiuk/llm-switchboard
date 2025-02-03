@@ -76,7 +76,40 @@ export function getWebviewContent() {
                 margin-left: 10px;
                 cursor: pointer;
             }
+            
+            /* Code Block Styling */
+            .code-container {
+                position: relative;
+                background: #1e1e1e;
+                border-radius: 5px;
+                padding: 10px;
+                margin-top: 5px;
+                font-family: 'Courier New', Courier, monospace;
+                overflow-x: auto;
+            }
+            .code-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.9em;
+                color: #bbb;
+                padding-bottom: 5px;
+            }
+            .copy-button {
+                background: none;
+                border: none;
+                color: #bbb;
+                cursor: pointer;
+                font-size: 0.8em;
+            }
+            .copy-button:hover {
+                color: white;
+            }
+            pre {
+                margin: 0;
+            }
         </style>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" rel="stylesheet" />
     </head>
     <body>
         <div class="chat-container">
@@ -86,6 +119,7 @@ export function getWebviewContent() {
                 <button id="sendButton">Send</button>
             </div>
         </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
         <script>
             const vscode = acquireVsCodeApi();
             const inputBox = document.getElementById('userInput');
@@ -104,6 +138,14 @@ export function getWebviewContent() {
                 \`;
                 messagesContainer.appendChild(messageElement);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            function copyCode(button) {
+                const codeBlock = button.parentElement.nextElementSibling.querySelector("code");
+                navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+                    button.textContent = "Copied!";
+                    setTimeout(() => button.textContent = "Copy", 2000);
+                });
             }
 
             sendButton.addEventListener('click', () => {

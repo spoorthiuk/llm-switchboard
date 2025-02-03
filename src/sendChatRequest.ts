@@ -1,6 +1,5 @@
 import * as http from 'http';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-python'; // Import the language you need
 export async function sendChatRequest(userMessage: string, selectedModel: string): Promise<string> {
     const apiUrl = 'http://localhost:11434/api/chat';
     const requestBody = JSON.stringify({

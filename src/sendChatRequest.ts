@@ -33,14 +33,13 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                                 fullMessage =  fullMessage.replace(codeBlockRegex, (match, lang, code) => {
                                     lang = lang || "plaintext"; // Default to plaintext if no language is provided
                                     return `
-                                        <div class="code-container">
-                                            <div class="code-header">
-                                                <span>${lang.toUpperCase()}</span>
-                                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                            </div>
-                                            <pre><code class="language-${lang}">${code}</code></pre>
+                                    <div class="code-container">
+                                        <div class="code-header">
+                                            <span>${lang.toUpperCase()}</span>
+                                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
                                         </div>
-                                    `;
+                                        <pre class="line-numbers"><code class="language-${lang}">${code}</code></pre>
+                                    </div>`;
                                 });
                                 break; // If the message is done, stop
                             }

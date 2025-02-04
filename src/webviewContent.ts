@@ -5,6 +5,8 @@ export function getWebviewContent() {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>LLM Chat</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-darcula.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -92,9 +94,14 @@ export function getWebviewContent() {
                 justify-content: space-between;
                 align-items: center;
                 font-size: 0.9em;
-                color: #bbb;
-                padding-bottom: 5px;
+                color: #ddd; /* Lighter text for better contrast */
+                background: rgb(40, 40, 40); /* Darker background for contrast */
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                padding: 8px 12px; /* More padding for better spacing */
+                font-weight: bold;
             }
+
             .copy-button {
                 background: none;
                 border: none;
@@ -109,9 +116,8 @@ export function getWebviewContent() {
                 margin: 0;
             }
         </style>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" rel="stylesheet" />
     </head>
-    <body>
+    <body data-prismjs-copy-timeout="500">
         <div class="chat-container">
             <div class="messages" id="messages"></div>
             <div class="input-container">
@@ -119,9 +125,6 @@ export function getWebviewContent() {
                 <button id="sendButton">Send</button>
             </div>
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
         <script>
             const vscode = acquireVsCodeApi();
             const inputBox = document.getElementById('userInput');
@@ -140,6 +143,7 @@ export function getWebviewContent() {
                 \`;
                 messagesContainer.appendChild(messageElement);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                Prism.highlightAll();
             }
 
             function copyCode(button) {
@@ -177,6 +181,12 @@ export function getWebviewContent() {
                 }
             });
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-typescript.min.js"></script>
+        <script>Prism.highlightAll();</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     </body>
     </html>
     `;

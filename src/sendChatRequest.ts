@@ -1,10 +1,14 @@
 import * as http from 'http';
-import Prism from 'prismjs';
+
+let chatHistory: { role: string; content: string }[] = []; 
+
 export async function sendChatRequest(userMessage: string, selectedModel: string): Promise<string> {
     const apiUrl = 'http://localhost:11434/api/chat';
+    chatHistory.push({ role: 'user', content: userMessage });
+
     const requestBody = JSON.stringify({
         model: selectedModel,
-        messages: [{ role: 'user', content: userMessage }],
+        messages: chatHistory, // Send full conversation history
     });
 
     return new Promise((resolve, reject) => {

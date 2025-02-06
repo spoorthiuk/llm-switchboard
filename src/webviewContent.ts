@@ -17,13 +17,12 @@ export function getWebviewContent() {
             .chat-container {
                 display: flex;
                 flex-direction: column;
-                height: 100vh;
+                height: 98vh;
             }
             .messages {
                 flex-grow: 1;
                 overflow-y: auto;
                 border: 1px solid #ccc;
-                padding: 10px;
                 background: rgb(23, 23, 23);
             }
             .message {

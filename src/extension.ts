@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 import { getWebviewContent } from './webviewContent';
 import { sendChatRequest } from './sendChatRequest';
 
@@ -7,10 +9,13 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage('Choose an AI assistant');
         console.log('Switchboard activated');
         const modelSelection = vscode.window.createQuickPick();
-        modelSelection.items = [
-            { label: 'deepseek-r1:8b', description: 'DeepSeek\'s first-generation of reasoning models with comparable performance to OpenAI-o1' },
-            { label: 'llama3.2', description: 'Meta\'s Llama 3.2 goes small with 1B and 3B models' },
-        ];
+        const modelsPath = path.join(context.extensionPath, 'src', 'models.json');
+        const models = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
+
+        modelSelection.items = models.map((model: { label: string; description: string }) => ({
+            label: model.label,
+            description: model.description
+        }));
         modelSelection.onDidChangeSelection(selection => {
 			const selectedModel = selection[0].label;
             if (selection[0]) {

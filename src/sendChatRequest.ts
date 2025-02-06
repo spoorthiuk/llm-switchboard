@@ -34,6 +34,13 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                             fullMessage += jsonResponse.message.content; // Accumulate the content
                             if (jsonResponse.done) {
                                 const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+                                const headerRegex = /### (.*?)(\n|$)/g;
+                                const boldRegex = /\*\*(.*?)\*\*/g;
+                                const inlineCodeRegex = /`([^`]+)`/g;
+                                const numberedListRegex = /^(\d+)\. (.*?)(\n|$)/gm;
+                                const bulletedListRegex = /^\* (.*?)(\n|$)/gm;
+                                console.log(fullMessage);
+
                                 fullMessage =  fullMessage.replace(codeBlockRegex, (match, lang, code) => {
                                     lang = lang || "plaintext"; // Default to plaintext if no language is provided
                                     return `
@@ -44,6 +51,28 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                                         </div>
                                         <pre class="line-numbers"><code class="language-${lang}">${code}</code></pre>
                                     </div>`;
+                                })
+                                .replace(headerRegex, (match, header) => {
+                                    return `<h3>${header}</h3>`;
+                                })
+                                .replace(boldRegex, (match, boldText) => {
+                                    return `<strong>${boldText}</strong>`;
+                                })
+                                .replace(inlineCodeRegex, (match, code) => {
+                                    return `<code>${code}</code>`;
+                                })
+                                .replace(numberedListRegex, (match) => {
+                                    let listItems = "";
+                                    let startNumber = 1;
+                                    match.replace(numberedListRegex, (m, number, text) => {
+                                        if (!listItems) startNumber = Number(number); // Set starting number from the first list item
+                                        listItems += `<li>${text}</li>`;
+                                        return m;
+                                    });
+                                    return `<ol start="${startNumber}">${listItems}</ol>`;
+                                })
+                                .replace(bulletedListRegex, (match, text) => {
+                                    return `<ul><li>${text}</li></ul>`;
                                 });
                                 break; // If the message is done, stop
                             }

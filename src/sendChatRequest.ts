@@ -40,6 +40,7 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                                 const inlineCodeRegex = /`([^`]+)`/g;
                                 const numberedListRegex = /^(\d+)\. (.*?)(\n|$)/gm;
                                 const bulletedListRegex = /^\* (.*?)(\n|$)/gm;
+                                const dashListRegex = /^- (.*?)(\n|$)/gm;
 
                                 fullMessage =  fullMessage.replace(codeBlockRegex, (match, lang, code) => {
                                     lang = lang || "plaintext"; // Default to plaintext if no language is provided
@@ -75,6 +76,9 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                                     return `<ol start="${startNumber}">${listItems}</ol>`;
                                 })
                                 .replace(bulletedListRegex, (match, text) => {
+                                    return `<ul><li>${text}</li></ul>`;
+                                })
+                                .replace(dashListRegex, (match, text) => {
                                     return `<ul><li>${text}</li></ul>`;
                                 });
                                 break; // If the message is done, stop

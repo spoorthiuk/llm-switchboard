@@ -114,11 +114,17 @@ export function getWebviewContent() {
             pre {
                 margin: 0;
             }
+            .typing-indicator {
+                display: none;
+                font-style: italic;
+                color: #bbb;
+            }
         </style>
     </head>
     <body data-prismjs-copy-timeout="500">
         <div class="chat-container">
             <div class="messages" id="messages"></div>
+            <div class="typing-indicator" id="typingIndicator">AI is typing<span id="dots">...</span></div>
             <div class="input-container">
                 <input type="text" id="userInput" placeholder="Type your message here...">
                 <button id="sendButton">Send</button>
@@ -129,6 +135,8 @@ export function getWebviewContent() {
             const inputBox = document.getElementById('userInput');
             const sendButton = document.getElementById('sendButton');
             const messagesContainer = document.getElementById('messages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const dots = document.getElementById('dots');
 
             function addMessage(text, sender) {
                 const messageElement = document.createElement('div');
@@ -162,6 +170,7 @@ export function getWebviewContent() {
                         text: userMessage
                     });
                     inputBox.value = '';
+                    showTypingIndicator();
                 }
             });
 
@@ -175,10 +184,27 @@ export function getWebviewContent() {
                 const message = event.data;
                 switch (message.command) {
                     case 'receiveMessage':
+                        hideTypingIndicator();
                         addMessage(message.text, 'ai');
                         break;
                 }
             });
+
+            let typingInterval;
+
+            function showTypingIndicator() {
+                typingIndicator.style.display = 'block';
+                let dotCount = 0;
+                typingInterval = setInterval(() => {
+                    dots.textContent = '.'.repeat((dotCount % 3) + 1);
+                    dotCount++;
+                }, 500);
+            }
+
+            function hideTypingIndicator() {
+                clearInterval(typingInterval);
+                typingIndicator.style.display = 'none';
+            }
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-python.min.js"></script>

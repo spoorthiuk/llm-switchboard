@@ -34,12 +34,12 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                             fullMessage += jsonResponse.message.content; // Accumulate the content
                             if (jsonResponse.done) {
                                 const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-                                const headerRegex = /### (.*?)(\n|$)/g;
+                                const header3Regex = /### (.*?)(\n|$)/g;
+                                const header4Regex = /#### (.*?)(\n|$)/g;
                                 const boldRegex = /\*\*(.*?)\*\*/g;
                                 const inlineCodeRegex = /`([^`]+)`/g;
                                 const numberedListRegex = /^(\d+)\. (.*?)(\n|$)/gm;
                                 const bulletedListRegex = /^\* (.*?)(\n|$)/gm;
-                                console.log(fullMessage);
 
                                 fullMessage =  fullMessage.replace(codeBlockRegex, (match, lang, code) => {
                                     lang = lang || "plaintext"; // Default to plaintext if no language is provided
@@ -49,11 +49,14 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
                                             <span>${lang.toUpperCase()}</span>
                                             <button class="copy-button" onclick="copyCode(this)">Copy</button>
                                         </div>
-                                        <pre class="line-numbers"><code class="language-${lang}">${code}</code></pre>
+                                        <pre class="line-numbers"><code class="language-${lang}">${escapeHtml(code)}</code></pre>
                                     </div>`;
                                 })
-                                .replace(headerRegex, (match, header) => {
+                                .replace(header3Regex, (match, header) => {
                                     return `<h3>${header}</h3>`;
+                                })
+                                .replace(header4Regex, (match, header) => {
+                                    return `<h4>${header}</h4>`;
                                 })
                                 .replace(boldRegex, (match, boldText) => {
                                     return `<strong>${boldText}</strong>`;
@@ -102,4 +105,23 @@ export async function sendChatRequest(userMessage: string, selectedModel: string
         req.write(requestBody);
         req.end();
     });
+
+    function escapeHtml(unsafe: string): string {
+        return unsafe.replace(/[&<"']/g, (match) => {
+            switch (match) {
+                case '&':
+                    return '&amp;';
+                case '<':
+                    return '&lt;';
+                case '>':
+                    return '&gt;';
+                case '"':
+                    return '&quot;';
+                case "'":
+                    return '&#039;';
+                default:
+                    return match;
+            }
+        });
+    }
 }

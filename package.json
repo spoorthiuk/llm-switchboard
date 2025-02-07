@@ -3,8 +3,8 @@
   "publisher": "LLM-Nexus", 
   "displayName": "LLM Switchboard",
   "description": "Offline code assistant for VS Code—seamlessly switch between multiple AI models to enhance productivity and creativity, all without needing an internet connection.",
-  "version": "0.0.3",
-  "icon": "media/logo.png",
+  "version": "0.0.4",
+  "icon": "/media/logo.png",
   "engines": {
     "vscode": "^1.96.0"
   },

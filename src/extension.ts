@@ -1,20 +1,34 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
 import { getWebviewContent } from './webviewContent';
 import { sendChatRequest } from './sendChatRequest';
+import { exec } from 'child_process';
+
+async function fetchInstalledModels(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+        exec('ollama list', (error, stdout) => {
+            if (error) {
+                vscode.window.showErrorMessage("Failed to fetch Ollama models. Is Ollama installed?");
+                return reject(error);
+            }
+            const models = stdout
+                .split('\n')
+                .slice(1)
+                .map(line => line.split(/\s+/)[0])
+                .filter(name => name);
+            resolve(models);
+        });
+    });
+}
 
 export function activate(context: vscode.ExtensionContext) {
-    const disposable = vscode.commands.registerCommand('llm-switchboard.switchboard', () => {
+    const disposable = vscode.commands.registerCommand('llm-switchboard.switchboard', async () => {
         vscode.window.showInformationMessage('Choose an AI assistant');
         console.log('Switchboard activated');
         const modelSelection = vscode.window.createQuickPick();
-        const modelsPath = path.join(context.extensionPath, 'src', 'models.json');
-        const models = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
+        const models = await fetchInstalledModels();
 
-        modelSelection.items = models.map((model: { label: string; description: string }) => ({
-            label: model.label,
-            description: model.description
+        modelSelection.items = models.map((model: string) => ({
+            label: model
         }));
         modelSelection.onDidChangeSelection(selection => {
 			const selectedModel = selection[0].label;

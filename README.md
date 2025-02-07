@@ -1,10 +1,10 @@
-# LLMSwitchboard README
+# LLM Switchboard
 
-LLMSwitchboard is a VS Code extension that allows users to chat with multiple offline large language models (LLMs) directly within their editor. This extension provides seamless interaction with locally hosted AI models for coding assistance, debugging, and general inquiries—all while keeping data private.
+LLM Switchboard is a VS Code extension that allows users to chat with multiple offline large language models (LLMs) directly within their editor. This extension provides seamless interaction with locally hosted AI models for coding assistance, debugging, and general inquiries—all while keeping data private.
 
-Unlike cloud-based AI assistants, LLMSwitchboard ensures that all interactions remain local, meaning no data leaves your machine. This is particularly beneficial for developers working with confidential codebases, offline environments, or those concerned with data privacy.
+Unlike cloud-based AI assistants, LLM Switchboard ensures that all interactions remain local, meaning no data leaves your machine. This is particularly beneficial for developers working with confidential codebases, offline environments, or those concerned with data privacy.
 
-With its intuitive chat interface, model-switching capabilities, and context-awareness, LLMSwitchboard enhances the developer experience by providing intelligent, real-time code suggestions and explanations without requiring internet access. Whether you're debugging an error, refactoring code, or seeking general programming guidance, LLMSwitchboard empowers you with AI-assisted coding directly within your workflow.
+With its intuitive chat interface, model-switching capabilities, and context-awareness, LLM Switchboard enhances the developer experience by providing intelligent, real-time code suggestions and explanations without requiring internet access. Whether you're debugging an error, refactoring code, or seeking general programming guidance, LLMSwitchboard empowers you with AI-assisted coding directly within your workflow.
 
 ## Features
 
@@ -19,7 +19,7 @@ With its intuitive chat interface, model-switching capabilities, and context-awa
 
 ## Requirements
 
-To use LLMSwitchboard, ensure the following dependencies are installed:
+To use LLM Switchboard, ensure the following dependencies are installed:
 * A locally running LLM server from [Ollama](https://ollama.com)
 
 ### Setup Instructions

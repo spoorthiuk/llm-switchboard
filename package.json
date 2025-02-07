@@ -1,8 +1,10 @@
 {
   "name": "llm-switchboard",
-  "displayName": "llm-switchboard",
+  "publisher": "LLM-Nexus", 
+  "displayName": "LLM Switchboard",
   "description": "Offline code assistant for VS code which lets the user switch between multiple models",
-  "version": "0.0.1",
+  "version": "0.0.3",
+  "icon": "media/logo.png",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -30,7 +32,6 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.96.0",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
@@ -41,7 +42,10 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@types/prismjs": "^1.26.5",
-    "prismjs": "^1.29.0"
+    "@types/prismjs": "^1.26.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spoorthiuk/llm-switchboard"
   }
 }

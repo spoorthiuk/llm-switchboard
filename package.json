@@ -15,13 +15,30 @@
     "*"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "llm-switchboard.switchboard",
-        "title": "LLM Switchboard"
-      }
-    ]
+    "contributes": {
+      "commands": [
+        {
+          "command": "llm-switchboard.switchboard",
+          "title": "LLM Switchboard"
+        }
+      ],
+      "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "llmSwitchboardSidebar",
+          "title": "LLM Switchboard",
+          "icon": "media/logo.png" 
+        }
+      ]
+    },
+  "views": {
+      "llmSwitchboardSidebar": [
+        {
+          "id": "llmSwitchboardView",
+          "name": "Open LLM Switchboard"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

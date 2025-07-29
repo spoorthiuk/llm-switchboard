@@ -81,10 +81,27 @@ export function activate(context: vscode.ExtensionContext) {
                 panel.webview.onDidReceiveMessage(async (message) => {
                     if (message.command === 'sendMessage') {
                         const userMessage = message.text;
-                        // Send the user message to the LLM and get the response
-                        const response = await sendChatRequest(userMessage, selectedModel);  // Call API with the user message
-                        // Send the AI response back to the webview to display
-                        panel.webview.postMessage({ command: 'receiveMessage', text: response });  // Send response back to webview
+                        // Get the currently active text editor (if any)
+                        const editor = vscode.window.activeTextEditor;
+                        let fileContext = '';
+                        let fileName = '';
+                        if (editor) {
+                            // Read the entire content of the open file
+                            fileContext = editor.document.getText();
+                            // Get the file name only (not full path)
+                            fileName = editor.document.fileName.split(/[\\/]/).pop() || '';
+                        }
+                        // Combine the file content with the user's message, if available
+                        let promptWithContext = userMessage;
+                        if (fileContext) {
+                            // Prepend the file content to the user's message for model context
+                            promptWithContext = `Here is the content of my current file:\n\n${fileContext}\n\n${userMessage}`;
+                        }
+                        console.log('Prompt sent to LLM:', promptWithContext);
+                        // Send the combined prompt to the LLM and get the response
+                        const response = await sendChatRequest(promptWithContext, selectedModel);  // Call API with the user message and file context
+                        // Send the AI response back to the webview to display, and also send the file name
+                        panel.webview.postMessage({ command: 'receiveMessage', text: response, fileName });  // Send response and file name back to webview
                     }
                 });
             }

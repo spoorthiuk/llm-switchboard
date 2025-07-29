@@ -1,3 +1,7 @@
+/**
+ * Returns the HTML content for the chat webview panel.
+ * This includes the chat UI, styling, and all client-side logic.
+ */
 export function getWebviewContent() {
     return `<!DOCTYPE html>
     <html lang="en">
@@ -5,37 +9,43 @@ export function getWebviewContent() {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>LLM Chat</title>
+        <!-- Prism.js theme for code highlighting -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-darcula.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
         <style>
+            /* General body styling */
             body {
                 font-family: Arial, sans-serif;
                 padding: 10px;
                 background-color: rgb(4, 4, 4);
                 color: white;
             }
+            /* Main chat container layout */
             .chat-container {
                 display: flex;
                 flex-direction: column;
                 height: 98vh;
             }
+            /* Message list area */
             .messages {
                 flex-grow: 1;
                 overflow-y: auto;
                 border: 1px solid #ccc;
                 background: rgb(23, 23, 23);
             }
+            /* Individual message styling */
             .message {
                 display: flex;
                 align-items: center;
                 margin-bottom: 10px;
             }
             .message.user {
-                justify-content: flex-end;
+                justify-content: flex-end; /* User messages align right */
             }
             .message.ai {
-                justify-content: flex-start;
+                justify-content: flex-start; /* AI messages align left */
             }
+            /* Avatar styling for user and AI */
             .message .avatar {
                 width: 40px;
                 height: 40px;
@@ -46,6 +56,7 @@ export function getWebviewContent() {
                 justify-content: center;
                 margin: 0 10px;
             }
+            /* Message bubble styling */
             .message .text {
                 max-width: 70%;
                 padding: 10px;
@@ -56,6 +67,7 @@ export function getWebviewContent() {
                 background-color: #0078d4;
                 color: white;
             }
+            /* Input area styling */
             .input-container {
                 display: flex;
                 padding-top: 10px;
@@ -78,7 +90,7 @@ export function getWebviewContent() {
                 cursor: pointer;
             }
             
-            /* Code Block Styling */
+            /* Code block container styling */
             .code-container {
                 position: relative;
                 background: #1e1e1e;
@@ -88,6 +100,7 @@ export function getWebviewContent() {
                 font-family: 'Courier New', Courier, monospace;
                 overflow-x: auto;
             }
+            /* Header for code blocks (with copy button) */
             .code-header {
                 display: flex;
                 justify-content: space-between;
@@ -100,7 +113,7 @@ export function getWebviewContent() {
                 padding: 8px 12px; /* More padding for better spacing */
                 font-weight: bold;
             }
-
+            /* Copy button styling */
             .copy-button {
                 background: none;
                 border: none;
@@ -114,6 +127,7 @@ export function getWebviewContent() {
             pre {
                 margin: 0;
             }
+            /* Typing indicator styling */
             .typing-indicator {
                 display: none;
                 font-style: italic;
@@ -123,14 +137,18 @@ export function getWebviewContent() {
     </head>
     <body data-prismjs-copy-timeout="500">
         <div class="chat-container">
+            <!-- Message list -->
             <div class="messages" id="messages"></div>
+            <!-- Typing indicator (shown when AI is responding) -->
             <div class="typing-indicator" id="typingIndicator">AI is typing<span id="dots">...</span></div>
+            <!-- User input area -->
             <div class="input-container">
                 <input type="text" id="userInput" placeholder="Type your message here...">
                 <button id="sendButton">Send</button>
             </div>
         </div>
         <script>
+            // VS Code API for messaging between webview and extension
             const vscode = acquireVsCodeApi();
             const inputBox = document.getElementById('userInput');
             const sendButton = document.getElementById('sendButton');
@@ -138,6 +156,11 @@ export function getWebviewContent() {
             const typingIndicator = document.getElementById('typingIndicator');
             const dots = document.getElementById('dots');
 
+            /**
+             * Adds a message to the chat UI.
+             * @param {string} text - The message text.
+             * @param {string} sender - 'user' or 'ai'.
+             */
             function addMessage(text, sender) {
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', sender);
@@ -153,6 +176,10 @@ export function getWebviewContent() {
                 Prism.highlightAll();
             }
 
+            /**
+             * Copies code from a code block to the clipboard.
+             * @param {HTMLElement} button - The copy button element.
+             */
             function copyCode(button) {
                 const codeBlock = button.parentElement.nextElementSibling.querySelector("code");
                 navigator.clipboard.writeText(codeBlock.innerText).then(() => {
@@ -161,6 +188,7 @@ export function getWebviewContent() {
                 });
             }
 
+            // Send user message to extension when send button is clicked
             sendButton.addEventListener('click', () => {
                 const userMessage = inputBox.value;
                 if (userMessage.trim()) {
@@ -174,12 +202,14 @@ export function getWebviewContent() {
                 }
             });
 
+            // Allow sending message with Enter key
             inputBox.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     sendButton.click();
                 }
             });
 
+            // Listen for messages from the extension (AI responses)
             window.addEventListener('message', event => {
                 const message = event.data;
                 switch (message.command) {
@@ -192,6 +222,9 @@ export function getWebviewContent() {
 
             let typingInterval;
 
+            /**
+             * Shows the typing indicator and animates dots.
+             */
             function showTypingIndicator() {
                 typingIndicator.style.display = 'block';
                 let dotCount = 0;
@@ -201,11 +234,15 @@ export function getWebviewContent() {
                 }, 500);
             }
 
+            /**
+             * Hides the typing indicator.
+             */
             function hideTypingIndicator() {
                 clearInterval(typingInterval);
                 typingIndicator.style.display = 'none';
             }
         </script>
+        <!-- Prism.js for syntax highlighting -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-python.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-javascript.min.js"></script>

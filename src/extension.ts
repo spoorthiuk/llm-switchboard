@@ -3,6 +3,10 @@ import { getWebviewContent } from './webviewContent';
 import { sendChatRequest } from './sendChatRequest';
 import { exec } from 'child_process';
 
+/**
+ * Fetches the list of installed Ollama models by running 'ollama list' in the shell.
+ * @returns Promise resolving to an array of model names.
+ */
 async function fetchInstalledModels(): Promise<string[]> {
     return new Promise((resolve, reject) => {
         exec('ollama list', (error, stdout) => {
@@ -10,6 +14,7 @@ async function fetchInstalledModels(): Promise<string[]> {
                 vscode.window.showErrorMessage("Failed to fetch Ollama models. Is Ollama installed?");
                 return reject(error);
             }
+            // Parse the output to extract model names, skipping the header line
             const models = stdout
                 .split('\n')
                 .slice(1)
@@ -20,21 +25,30 @@ async function fetchInstalledModels(): Promise<string[]> {
     });
 }
 
+/**
+ * Called when the extension is activated.
+ * Registers the main command and sets up the chat UI and messaging.
+ */
 export function activate(context: vscode.ExtensionContext) {
+    // Register the main command for the switchboard
     const disposable = vscode.commands.registerCommand('llm-switchboard.switchboard', async () => {
         vscode.window.showInformationMessage('Choose an AI assistant');
         console.log('Switchboard activated');
         const modelSelection = vscode.window.createQuickPick();
         const models = await fetchInstalledModels();
 
+        // Populate the quick pick with available models
         modelSelection.items = models.map((model: string) => ({
             label: model
         }));
+
+        // Handle model selection
         modelSelection.onDidChangeSelection(selection => {
-			const selectedModel = selection[0].label;
+            const selectedModel = selection[0].label;
             if (selection[0]) {
                 vscode.window.showInformationMessage(`You selected: ${selectedModel}`);
                 modelSelection.hide();
+                // Create a new webview panel for the chat UI
                 const panel = vscode.window.createWebviewPanel(
                     'llmChat',
                     `${selectedModel}`,
@@ -45,28 +59,30 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 );
 
-                // HTML content for the chat window
+                // Set the HTML content for the chat window
                 panel.webview.html = getWebviewContent();
 
-                // Listen for messages from the webview
+                // Listen for messages from the webview (user input)
                 panel.webview.onDidReceiveMessage(async (message) => {
                     if (message.command === 'sendMessage') {
                         const userMessage = message.text;
+                        // Send the user message to the LLM and get the response
                         const response = await sendChatRequest(userMessage, selectedModel);  // Call API with the user message
+                        // Send the AI response back to the webview to display
                         panel.webview.postMessage({ command: 'receiveMessage', text: response });  // Send response back to webview
                     }
                 });
             }
         });
 
+        // Clean up the quick pick UI when hidden
         modelSelection.onDidHide(() => modelSelection.dispose());
         modelSelection.show();
     });
 
+    // Add to extension context subscriptions for cleanup
     context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
-
-

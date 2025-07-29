@@ -3,6 +3,17 @@ import { getWebviewContent } from './webviewContent';
 import { sendChatRequest } from './sendChatRequest';
 import { exec } from 'child_process';
 
+class LlmTreeProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    getTreeItem(element: vscode.TreeItem): vscode.TreeItem { return element; }
+    getChildren(): vscode.ProviderResult<vscode.TreeItem[]> {
+        // Single clickable item
+        const item = new vscode.TreeItem('Open LLM Switchboard');
+        item.command = { command: 'llm-switchboard.switchboard', title: 'Open LLM Switchboard' };
+        item.iconPath = new vscode.ThemeIcon('comment-discussion');
+        return [item];
+    }
+}
+
 /**
  * Fetches the list of installed Ollama models by running 'ollama list' in the shell.
  * @returns Promise resolving to an array of model names.
@@ -30,6 +41,10 @@ async function fetchInstalledModels(): Promise<string[]> {
  * Registers the main command and sets up the chat UI and messaging.
  */
 export function activate(context: vscode.ExtensionContext) {
+    // Register the TreeView for the sidebar
+    const treeProvider = new LlmTreeProvider();
+    vscode.window.registerTreeDataProvider('llmSwitchboardView', treeProvider);
+
     // Register the main command for the switchboard
     const disposable = vscode.commands.registerCommand('llm-switchboard.switchboard', async () => {
         vscode.window.showInformationMessage('Choose an AI assistant');
@@ -80,8 +95,15 @@ export function activate(context: vscode.ExtensionContext) {
         modelSelection.show();
     });
 
+    // Add a status bar button to launch the switchboard
+    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBarItem.text = '$(comment-discussion) LLM Switchboard';
+    statusBarItem.tooltip = 'Open LLM Switchboard';
+    statusBarItem.command = 'llm-switchboard.switchboard'; // This triggers your command
+    statusBarItem.show();
+
     // Add to extension context subscriptions for cleanup
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable, statusBarItem);
 }
 
 // This method is called when your extension is deactivated

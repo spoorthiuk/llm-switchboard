@@ -139,8 +139,11 @@ export function getWebviewContent() {
         <div class="chat-container">
             <!-- Message list -->
             <div class="messages" id="messages"></div>
-            <!-- Typing indicator (shown when AI is responding) -->
-            <div class="typing-indicator" id="typingIndicator">AI is typing<span id="dots">...</span></div>
+            <!-- Typing indicator and file name row -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <div class="typing-indicator" id="typingIndicator">AI is typing<span id="dots">...</span></div>
+                <div id="fileNameDisplay" style="font-weight: bold; color: #bbb; padding-left: 16px;"></div>
+            </div>
             <!-- User input area -->
             <div class="input-container">
                 <input type="text" id="userInput" placeholder="Type your message here...">
@@ -155,6 +158,7 @@ export function getWebviewContent() {
             const messagesContainer = document.getElementById('messages');
             const typingIndicator = document.getElementById('typingIndicator');
             const dots = document.getElementById('dots');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
 
             /**
              * Adds a message to the chat UI.
@@ -216,6 +220,10 @@ export function getWebviewContent() {
                     case 'receiveMessage':
                         hideTypingIndicator();
                         addMessage(message.text, 'ai');
+                        // Update file name display if provided
+                        if (typeof message.fileName === 'string') {
+                            fileNameDisplay.textContent = message.fileName ? 'Active file: ' + message.fileName : '';
+                        }
                         break;
                 }
             });
